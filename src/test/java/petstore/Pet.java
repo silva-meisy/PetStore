@@ -25,7 +25,7 @@ public class Pet {
     }
 
     // Incluir - Create - Post
-    @Test  // Identifica o método ou função como um teste para o TestNG
+    @Test(priority = 1)  // Identifica o método ou função como um teste para o TestNG
     public void incluirPet() throws IOException {
         String jsonBody = lerJson("db/pet1.json");
 
@@ -48,11 +48,11 @@ public class Pet {
                 //.body("tags.name", containsString("sta"))
                 //body("tags.name", contains("sta"))
 
-
+        System.out.println("Teste incluir pet");
     }
 
 
-    @Test
+    @Test(priority = 2)
     public void consultarPet()
     {
         String petId="32265489";
@@ -75,6 +75,50 @@ public class Pet {
                 .path("category.name");
 
         System.out.println(" O token é " + token);
+        System.out.println("Teste consultar pet");
+    }
+
+    @Test(priority = 3)
+    public void alterarPet() throws IOException {
+        String jsonBody= lerJson("db/pet2.json");
+
+        given()
+                .contentType("application/json")
+                .log().all()
+                .body(jsonBody)
+        .when()
+                .put(uri)
+        .then()
+                .log().all()
+                .statusCode(200)
+                .body("name", is("Leona"))
+                .body("status", is("sold"))
+                .body("category.name", is("pet2"));
+
+        System.out.println("Teste alterar pet");
+    }
+
+    @Test(priority = 4)
+    public void excluirpet()
+    {
+        String petId="799999";
+
+        given()
+                .contentType("application/json")
+                .log().all()
+
+        .when()
+                .delete(uri + "/" + petId)
+
+        .then()
+                .log().all()
+                .statusCode(200)
+                .body("code", is(200))
+                .body("type", is("unknown"))
+                .body("message", is(petId));
+
+
+        System.out.println("Teste excluir pet");
 
     }
 
